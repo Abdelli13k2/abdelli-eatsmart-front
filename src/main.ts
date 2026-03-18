@@ -18,74 +18,143 @@ const app = document.querySelector<HTMLDivElement>('#app')!
 // Structure HTML de base
 app.innerHTML = `
   <header>
-    <h1>EatSmart - Carte du Restaurant</h1>
+    <h1>
+      EatSmart - Carte du Restaurant 
+      (<span id="nb-plats">0</span> plats)
+    </h1>
+    <p id="message">Chargement du message...</p>
   </header>
-
+  <div class="content-wrapper">
   <main class="menu-container">
     <p>Chargement du menu...</p>
   </main>
-`
 
+  <aside class="cart-container">
+        <h2>Votre Panier</h2>
+        <div id="cart-items">
+          <p>Votre panier est vide</p>
+        </div>
+        <hr>
+        <div class="cart-total">
+          <strong>Total : <span id="total-prix">0.00</span>€</strong>
+        </div>
+  </aside>
+  </div>
+`;
+
+const message = document.querySelector<HTMLParagraphElement>('#message')!
 const menuContainer = document.querySelector<HTMLDivElement>('.menu-container')!
+const nbPlatsElement = document.querySelector<HTMLSpanElement>('#nb-plats')!
+const panier: Article[] = []
 
 /**
- * Fonction qui récupère les articles depuis l'API
- * et les affiche dynamiquement
+ * Charger le message du jour
+ */
+async function chargerMessageDuJour() {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+    const data = await response.json()
+    message.textContent = `Message du jour : ${data.title}`
+  } catch (error) {
+    message.textContent = "Impossible de charger le message du jour"
+  }
+}
+
+function afficherPanier() {
+  const cartItems = document.getElementById("cart-items")!
+  const totalSpan = document.getElementById("total-prix")!
+
+  if (panier.length === 0) {
+    cartItems.innerHTML = "<p>Votre panier est vide</p>"
+    totalSpan.textContent = "0.00"
+    return
+  }
+
+  cartItems.innerHTML = ""
+
+  let total = 0
+
+  panier.forEach(plat => {
+    const prix = parseFloat(plat.prix_article)
+    total += prix
+
+    cartItems.innerHTML += `
+      <div class="cart-item">
+        <span>${plat.nom_article}</span>
+        <span>${prix.toFixed(2)}€</span>
+      </div>
+    `
+  })
+
+  totalSpan.textContent = total.toFixed(2)
+}
+
+/**
+ * Charger et afficher les articles
  */
 async function chargerEtAfficherArticle() {
-
   try {
-
-    // Requête vers l'API
     const response = await fetch(API_URL)
+    if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`)
 
-    // Vérification de la réponse HTTP
-    if (!response.ok) {
-      throw new Error(`Erreur HTTP : ${response.status}`)
-    }
-
-    // Conversion JSON
-    // const articles: Article[] = await response.json()
     const articles: Article[] = await response.json()
-
-    
-    // -------- Besoin n°1 --------
-    // Vérifier que les données arrivent bien
     console.log("Articles reçus depuis l'API :", articles)
 
-    // Nettoyer le conteneur
     menuContainer.innerHTML = ""
+    nbPlatsElement.textContent = articles.length.toString()
 
-    // Si aucun article
     if (articles.length === 0) {
       menuContainer.innerHTML = `<p>Aucun article disponible</p>`
       return
     }
 
-    // -------- Besoin n°2 --------
-    // Création dynamique des cartes
-    articles.forEach(article => {
-
+    articles.forEach((article, index) => {
       const card = document.createElement('div')
       card.classList.add('card')
 
       const prixFormate = parseFloat(article.prix_article).toFixed(2)
+      const prix = parseFloat(article.prix_article)
+      const BonPLan = prix < 10 ? '<p class="bon plan">🔥 Bon Plan</p>' : ""
 
       card.innerHTML = `
         <h2>${article.nom_article}</h2>
-        <p>${article.description_article}</p>
-        <p class="prix">${prixFormate} €</p>
+        <strong>
+          <p>${article.description_article}</p>
+          <p class="prix">${prixFormate} €</p>
+          ${BonPLan}
+        </strong>
+        <button class="btn-order">Ajouter</button>
       `
 
       menuContainer.appendChild(card)
 
+      // Ajouter un événement clic sur le bouton
+      const btn = card.querySelector<HTMLButtonElement>('.btn-order')!
+      btn.addEventListener('click', () => {
+      console.log(`Bouton n°${index} cliqué`)
+      console.log(`Plat ajouté : ${article.nom_article}`)
+
+      // Ajouter au panier
+      panier.push(article)
+
+
+      console.log("État du panier :", panier)
     })
 
-  }
-  catch (error) {
+      // Sélectionner tous les boutons "Ajouter" 
+      const tousLesBoutons = document.querySelectorAll<HTMLButtonElement>('.btn-order');
 
+      // Parcourt la liste pour leur ajouter une action 
+      tousLesBoutons.forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+          console.log(`Bouton n°${index} cliqué !`)
+        })
+      })
+    })
+
+
+  } catch (error) {
     console.error("Erreur récupération API :", error)
-
     menuContainer.innerHTML = `
       <p class="error">
         Impossible de charger les articles.
@@ -93,8 +162,8 @@ async function chargerEtAfficherArticle() {
       </p>
     `
   }
-
 }
 
-// Lancement au chargement
+// Lancer les fonctions au chargement
 chargerEtAfficherArticle()
+chargerMessageDuJour()

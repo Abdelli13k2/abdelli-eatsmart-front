@@ -1,5 +1,48 @@
-#app { font-family: sans-serif; max-width: 1000px; margin: auto; }
-.menu-container { display: flex; gap: 20px; flex-wrap: wrap; padding: 20px; }
+#app {
+  font-family: sans-serif;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* CONTENEUR GLOBAL */
+.content-wrapper {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+/* MENU (à gauche) */
+.menu-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  flex: 3;
+}
+
+/* PANIER (à droite en haut) */
+.cart-container {
+  flex: 1;
+  background: #f9f9f9;
+  padding: 20px;
+  border: 2px solid #2c3e50;
+  border-radius: 8px;
+
+  position: sticky;
+  top: 20px; /* reste en haut quand tu scroll */
+}
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+}
+
+.cart-total {
+    margin-top: 15px;
+    font-size: 1.2em;
+    text-align: right;
+}
 .card { border: 1px solid #ddd; padding: 15px; border-radius: 10px; width: 250px; }
 .btn-order { background-color: #27ae60; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
 .sold-out { color: #e74c3c; font-weight: bold; }
