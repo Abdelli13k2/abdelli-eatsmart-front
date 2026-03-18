@@ -32,7 +32,7 @@ const menuContainer = document.querySelector<HTMLDivElement>('.menu-container')!
  * Fonction qui récupère les articles depuis l'API
  * et les affiche dynamiquement
  */
-async function chargerEtAfficherArticles() {
+async function chargerEtAfficherArticle() {
 
   try {
 
@@ -45,8 +45,10 @@ async function chargerEtAfficherArticles() {
     }
 
     // Conversion JSON
+    // const articles: Article[] = await response.json()
     const articles: Article[] = await response.json()
 
+    
     // -------- Besoin n°1 --------
     // Vérifier que les données arrivent bien
     console.log("Articles reçus depuis l'API :", articles)
@@ -95,4 +97,4 @@ async function chargerEtAfficherArticles() {
 }
 
 // Lancement au chargement
-chargerEtAfficherArticles()
+chargerEtAfficherArticle()
