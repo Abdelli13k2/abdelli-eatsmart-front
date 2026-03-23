@@ -60,6 +60,9 @@ async function chargerMessageDuJour() {
   }
 }
 
+/**
+ * Affichage dynamique + total propre
+ */
 function afficherPanier() {
   const cartItems = document.getElementById("cart-items")!
   const totalSpan = document.getElementById("total-prix")!
@@ -70,22 +73,24 @@ function afficherPanier() {
     return
   }
 
-  cartItems.innerHTML = ""
-
-  let total = 0
-
-  panier.forEach(plat => {
+  //  Génération HTML propre
+  cartItems.innerHTML = panier.map(plat => {
     const prix = parseFloat(plat.prix_article)
-    total += prix
 
-    cartItems.innerHTML += `
+    return `
       <div class="cart-item">
         <span>${plat.nom_article}</span>
         <span>${prix.toFixed(2)}€</span>
       </div>
     `
-  })
+  }).join("")
 
+  //  Calcul du total (propre)
+  const total = panier.reduce((sum, plat) => {
+    return sum + parseFloat(plat.prix_article)
+  }, 0)
+
+  //  Besoin n°7 : 2 décimales
   totalSpan.textContent = total.toFixed(2)
 }
 
@@ -128,30 +133,19 @@ async function chargerEtAfficherArticle() {
 
       menuContainer.appendChild(card)
 
-      // Ajouter un événement clic sur le bouton
       const btn = card.querySelector<HTMLButtonElement>('.btn-order')!
       btn.addEventListener('click', () => {
-      console.log(`Bouton n°${index} cliqué`)
-      console.log(`Plat ajouté : ${article.nom_article}`)
+        console.log(`Bouton n°${index} cliqué`)
+        console.log(`Plat ajouté : ${article.nom_article}`)
 
-      // Ajouter au panier
-      panier.push(article)
+        panier.push(article)
 
+        console.log("État du panier :", panier)
 
-      console.log("État du panier :", panier)
-    })
-
-      // Sélectionner tous les boutons "Ajouter" 
-      const tousLesBoutons = document.querySelectorAll<HTMLButtonElement>('.btn-order');
-
-      // Parcourt la liste pour leur ajouter une action 
-      tousLesBoutons.forEach((btn, index) => {
-        btn.addEventListener('click', () => {
-          console.log(`Bouton n°${index} cliqué !`)
-        })
+        //  Mise à jour UI + total
+        afficherPanier()
       })
     })
-
 
   } catch (error) {
     console.error("Erreur récupération API :", error)
@@ -164,6 +158,6 @@ async function chargerEtAfficherArticle() {
   }
 }
 
-// Lancer les fonctions au chargement
+// Lancer les fonctions
 chargerEtAfficherArticle()
 chargerMessageDuJour()
