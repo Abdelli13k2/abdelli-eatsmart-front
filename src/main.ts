@@ -48,9 +48,14 @@ app.innerHTML = `
         <strong>Total : <span id="total-prix">0.00</span>€</strong>
       </div>
 
+      <button id="btn-valider">Valider la commande</button>
+      <button id="btn-vider">Vider le panier</button>
+
     </aside>
   </div>
 `
+
+
 
 // Récupération des éléments du DOM
 const message = document.querySelector<HTMLParagraphElement>('#message')!
@@ -212,3 +217,25 @@ async function chargerEtAfficherArticle() {
 }
 chargerEtAfficherArticle()
 chargerMessageDuJour()
+
+// Sélectionne le bouton "Valider" dans le DOM et ajoute un écouteur d'événement au clic
+const btnValider = document.getElementById("btn-valider")!
+
+btnValider.addEventListener("click", () => {
+  // Affiche un message dans la console lorsque le bouton est cliqué
+  console.log("Bouton Valider commande cliqué")
+})
+
+// Sélectionne le bouton "Vider" dans le DOM et ajoute un écouteur d'événement au clic
+const btnVider = document.getElementById("btn-vider")!
+
+btnVider.addEventListener("click", () => {
+   // Affiche un message dans la console lorsque le bouton est cliqué
+  console.log("Panier vidé")
+
+  // Vide le tableau
+  panier.length = 0
+
+  // Met à jour l'affichage
+  afficherPanier()
+})
