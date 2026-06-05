@@ -1,0 +1,8 @@
+Bilan annuel du restaurant :
+
+1. Chiffre d'affaires annuel : 12 500 000 €
+2. Nombre de commandes traitées dans l'année : 22 300
+3. Les plats les plus vendus :
+ - Pizzas Emmental
+ - Burgers Ricain
+ - Tiramisus Spéculos
