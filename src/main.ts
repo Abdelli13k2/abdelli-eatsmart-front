@@ -7,6 +7,7 @@ interface Article {
   description_article: string
   prix_article: string
   id_categorie: string
+  inclus_menu: string
 }
 
 // URL de l'API PHP
@@ -172,15 +173,21 @@ async function chargerEtAfficherArticle() {
 
       // Contenu HTML de la carte
       card.innerHTML = `
-        <h2>${article.nom_article}</h2>
-        <strong>
-          <p>${article.description_article}</p>
-          <p class="prix">${prixFormate} €</p>
-          ${BonPLan}
-        </strong>
-        <button class="btn-order">Ajouter</button>
-      `
+      <h2>${article.nom_article}</h2>
 
+      <strong>
+        <p>${article.description_article}</p>
+
+        <p class="prix">${prixFormate} €</p>
+
+        <p class="menu">
+          Menu : ${article.inclus_menu ?? 'aucun'}
+        </p>
+
+        ${BonPLan}
+      </strong>
+      <button class="btn-order">Ajouter</button>
+    `
       // Ajout au DOM
       menuContainer.appendChild(card)
 
